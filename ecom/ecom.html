@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EazyCart — Modern Store</title>
+  <link rel="stylesheet" href="ecom.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;400;500;600;700&family=Inter:wght@700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-logo" onclick="showPage('home')">Eazy<span>Cart</span></div>
+    <div class="nav-links">
+      <a onclick="showPage('home')" class="nav-link active">Home</a>
+      <a onclick="showPage('products')" class="nav-link">Products</a>
+      <a onclick="showPage('about')" class="nav-link">About</a>
+    </div>
+    <div class="nav-actions">
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search products..." oninput="filterProducts()"/>
+      </div>
+      <button class="cart-btn" onclick="showPage('cart')">
+        <i class="fas fa-shopping-bag"></i>
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- HOME PAGE -->
+  <div id="page-home" class="page active">
+    <section class="hero">
+      <div class="hero-content">
+        <p class="hero-eyebrow">New Collection 2025</p>
+        <h1 class="hero-title">Style That<br/><span>Speaks for You</span></h1>
+        <p class="hero-sub">Premium products, curated with care. Discover your next favourite thing.</p>
+        <div class="hero-cta">
+          <button class="btn-primary" onclick="showPage('products')">Shop Now <i class="fas fa-arrow-right"></i></button>
+          <button class="btn-outline" onclick="scrollToFeatured()">View Featured</button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><strong>2K+</strong><span>Products</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat"><strong>50K+</strong><span>Customers</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat"><strong>4.9★</strong><span>Rating</span></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card floating">
+          <div class="hero-badge">🔥 Trending</div>
+          <div class="hero-img-placeholder"><i class="fas fa-bag-shopping"></i></div>
+        </div>
+        <div class="hero-blob"></div>
+      </div>
+    </section>
+
+    <section class="categories">
+      <h2 class="section-title">Shop by Category</h2>
+      <div class="cat-grid">
+        <div class="cat-card" onclick="filterByCategory('Electronics')"><i class="fas fa-laptop"></i><span>Electronics</span></div>
+        <div class="cat-card" onclick="filterByCategory('Fashion')"><i class="fas fa-shirt"></i><span>Fashion</span></div>
+        <div class="cat-card" onclick="filterByCategory('Home')"><i class="fas fa-couch"></i><span>Home & Living</span></div>
+        <div class="cat-card" onclick="filterByCategory('Sports')"><i class="fas fa-dumbbell"></i><span>Sports</span></div>
+      </div>
+    </section>
+
+    <section class="featured" id="featured">
+      <div class="section-header">
+        <h2 class="section-title">Featured Products</h2>
+        <button class="btn-text" onclick="showPage('products')">View All <i class="fas fa-arrow-right"></i></button>
+      </div>
+      <div class="products-grid" id="featuredGrid"></div>
+    </section>
+
+    <section class="promo-banner">
+      <div class="promo-content">
+        <p>🎉 Limited Time Offer</p>
+        <h2>Get 20% off your first order</h2>
+        <p>Use code <strong>NEST20</strong> at checkout</p>
+        <button class="btn-primary" onclick="showPage('products')">Claim Offer</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- PRODUCTS PAGE -->
+  <div id="page-products" class="page">
+    <div class="page-header">
+      <h1>All Products</h1>
+      <p id="productCount">Showing all products</p>
+    </div>
+    <div class="products-layout">
+      <aside class="filters">
+        <h3>Filters</h3>
+        <div class="filter-group">
+          <label>Category</label>
+          <select id="categoryFilter" onchange="filterProducts()">
+            <option value="">All</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Home">Home & Living</option>
+            <option value="Sports">Sports</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Sort By</label>
+          <select id="sortFilter" onchange="filterProducts()">
+            <option value="">Default</option>
+            <option value="low">Price: Low to High</option>
+            <option value="high">Price: High to Low</option>
+            <option value="rating">Highest Rated</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>Max Price: ₹<span id="priceLabel">5000</span></label>
+          <input type="range" min="100" max="5000" value="5000" id="priceFilter" oninput="updatePrice(this.value)" onchange="filterProducts()"/>
+        </div>
+        <button class="btn-outline full" onclick="resetFilters()">Reset Filters</button>
+      </aside>
+      <div>
+        <div class="products-grid" id="allProductsGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT DETAIL PAGE -->
+  <div id="page-detail" class="page">
+    <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back</button>
+    <div class="detail-layout" id="detailContent"></div>
+  </div>
+
+  <!-- CART PAGE -->
+  <div id="page-cart" class="page">
+    <div class="page-header"><h1>Your Cart</h1></div>
+    <div class="cart-layout">
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-summary" id="cartSummary"></div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT PAGE -->
+  <div id="page-checkout" class="page">
+    <div class="page-header"><h1>Checkout</h1></div>
+    <div class="checkout-layout">
+      <div class="checkout-form">
+        <h3>Shipping Details</h3>
+        <div class="form-row">
+          <input type="text" placeholder="First Name" id="firstName"/>
+          <input type="text" placeholder="Last Name" id="lastName"/>
+        </div>
+        <input type="email" placeholder="Email Address" id="email"/>
+        <input type="text" placeholder="Phone Number" id="phone"/>
+        <input type="text" placeholder="Address" id="address"/>
+        <div class="form-row">
+          <input type="text" placeholder="City" id="city"/>
+          <input type="text" placeholder="PIN Code" id="pin"/>
+        </div>
+        <h3>Payment Method</h3>
+        <div class="payment-options">
+          <label class="pay-opt"><input type="radio" name="pay" value="card" checked/> 💳 Credit/Debit Card</label>
+          <label class="pay-opt"><input type="radio" name="pay" value="upi"/> 📲 UPI</label>
+          <label class="pay-opt"><input type="radio" name="pay" value="cod"/> 🚚 Cash on Delivery</label>
+        </div>
+        <div id="cardFields">
+          <input type="text" placeholder="Card Number" maxlength="19" oninput="formatCard(this)"/>
+          <div class="form-row">
+            <input type="text" placeholder="MM/YY" maxlength="5"/>
+            <input type="text" placeholder="CVV" maxlength="3"/>
+          </div>
+        </div>
+        <button class="btn-primary full" onclick="placeOrder()">Place Order <i class="fas fa-check"></i></button>
+      </div>
+      <div class="order-summary" id="orderSummary"></div>
+    </div>
+  </div>
+
+  <!-- SUCCESS PAGE -->
+  <div id="page-success" class="page">
+    <div class="success-box">
+      <div class="success-icon">✅</div>
+      <h1>Order Placed!</h1>
+      <p>Thank you for shopping with ShopNest. Your order is confirmed.</p>
+      <p class="order-id" id="orderId"></p>
+      <button class="btn-primary" onclick="showPage('home')">Continue Shopping</button>
+    </div>
+  </div>
+
+  <!-- ABOUT PAGE -->
+  <div id="page-about" class="page">
+    <div class="about-container">
+      <h1>About ShopNest</h1>
+      <p class="about-sub">We believe shopping should feel good — from discovery to delivery.</p>
+      <div class="about-grid">
+        <div class="about-card"><i class="fas fa-shield-halved"></i><h3>Secure Payments</h3><p>Your transactions are encrypted and safe with us at all times.</p></div>
+        <div class="about-card"><i class="fas fa-truck-fast"></i><h3>Fast Delivery</h3><p>Get your orders delivered within 2–5 business days, anywhere in India.</p></div>
+        <div class="about-card"><i class="fas fa-rotate-left"></i><h3>Easy Returns</h3><p>30-day hassle-free returns. No questions asked.</p></div>
+        <div class="about-card"><i class="fas fa-headset"></i><h3>24/7 Support</h3><p>Our team is always here to help you with any query.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="nav-logo">Shop<span>Nest</span></div>
+        <p>Modern shopping, made simple.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Quick Links</h4>
+        <a onclick="showPage('home')">Home</a>
+        <a onclick="showPage('products')">Products</a>
+        <a onclick="showPage('about')">About</a>
+        <a onclick="showPage('cart')">Cart</a>
+      </div>
+      <div class="footer-links">
+        <h4>Support</h4>
+        <a href="#">FAQ</a>
+        <a href="#">Shipping Policy</a>
+        <a href="#">Return Policy</a>
+        <a href="#">Contact Us</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2025 EazyCart. Built with ❤️ for your portfolio.</div>
+  </footer>
+
+  <script src="ecom.js"></script>
+</body>
+</html>
